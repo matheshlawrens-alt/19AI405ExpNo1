@@ -1,8 +1,6 @@
 <h1>ExpNo 1 :Developing AI Agent with PEAS Description</h1>
-<h3>Name:  Anto Aakash M</h3>
-<h3>Register Number: 212224030003</h3>
-
-
+<h3>Name: MADESHWAR SB </h3>
+<h3>Register Number/Staff Id: 212224030019 </h3>
 <h3>AIM:</h3>
 <br>
 <p>To find the PEAS description for the given AI problem and develop an AI agent.</p>
@@ -41,53 +39,42 @@
 <h3>STEP 5:</h3>
 <p>Measure the performance parameters: For each treatment performance incremented, for each movement performance decremented</p>
 
-# Step 1 & 2: Inputs and outputs handled in environment
-class HospitalEnvironment:
-    def __init__(self, rooms=3):
-        # Each room has a patient with random temperature
-        self.rooms = {f"Room{i+1}": random.randint(97, 103) for i in range(rooms)}
-        self.agent_location = "Room1"
-        self.performance = 0
-
-    def is_patient_sick(self):
-        return self.rooms[self.agent_location] >= 100  # fever if temp ≥ 100
-
-    def treat(self):
-        if self.is_patient_sick():
-            self.rooms[self.agent_location] = 98  # reset temperature (treated)
-            self.performance += 10
+INPUT:
+class MedicinePrescribingAgent:
+    def __init__(self):
+        self.performance = 0  # counts correct prescriptions
+        self.environment = {
+            "Room1": {"patient": True, "temperature": 39},  # fever patient
+            "Room2": {"patient": False, "temperature": 36}  # healthy room
+        }
+        self.current_room = "Room1"
+    # Sensors
+    def sense(self):
+        room_state = self.environment[self.current_room]
+        return room_state["patient"], room_state["temperature"]
+    # Actuators (move, treat)
+    def move(self, room):
+        print(f"\nMoving to {room}...")
+        self.current_room = room
+    def prescribe(self, patient, temperature):
+        if patient and temperature > 38:
+            print("Patient detected with fever! Prescribing medicine...")
+            self.performance += 1
+        elif not patient:
+            print("No patient here. No medicine prescribed.")
         else:
-            self.performance -= 1  # unnecessary treatment
+            print("Patient healthy. No medicine needed.")
+    # Main agent logic
+    def run(self):
+        for room in self.environment:
+            self.move(room)
+            patient, temp = self.sense()
+            print(f"Sensed → Patient: {patient}, Temp: {temp}°C")
+            self.prescribe(patient, temp)
+        print(f"\nFinal Performance Score: {self.performance}")
 
-    def move(self):
-        # move randomly to another room
-        self.agent_location = random.choice(list(self.rooms.keys()))
-        self.performance -= 1
+# Run the simulation
+agent = MedicinePrescribingAgent()
+agent.run()
 
-    def status(self):
-        return f"Location: {self.agent_location}, Rooms: {self.rooms}, Score: {self.performance}"
-
-
-# Step 4: Agent
-class DoctorAgent:
-    def program(self, env):
-        if env.is_patient_sick():
-            return "TREAT"
-        else:
-            return "MOVE"
-
-# Step 5: Run simulation
-env = HospitalEnvironment(rooms=3)
-agent = DoctorAgent()
-
-print("Initial:", env.status())
-for step in range(8):
-    action = agent.program(env)
-    if action == "TREAT":
-        env.treat()
-    else:
-        env.move()
-    print(f"Step {step+1}: Action={action} -> {env.status()}")
-
-print("\nFinal Score:", env.performance)
-ouput<img width="1920" height="757" alt="EXP1AI OP" src="https://github.com/user-attachments/assets/bd94ac4f-3f93-4ab3-81e1-5d7dfa1647b9" />
+![WhatsApp Image 2025-10-03 at 16 15 07_fa94a012](https://github.com/user-attachments/assets/898bde00-2bee-4874-b70f-ccd2a41c4076)
